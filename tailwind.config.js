@@ -1,10 +1,12 @@
-module.exports = {
-  content: [
-    "./index.html", // Include index.html
-    "./src/**/*.{js,ts,jsx,tsx}", // Include all JS, TS, JSX, TSX files in src directory
-  ],
+// tailwind.config.js
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Poppins", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
