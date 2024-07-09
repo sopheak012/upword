@@ -1,14 +1,16 @@
 import "./App.css";
-import MainPageNavbar from "./components/MainPage/MainPageNavbar";
-import MainPageBody from "./components/MainPage/MainPageBody";
-import MainPageFooter from "./components/MainPage/MaingPageFooter";
+// import MainPageNavbar from "./components/MainPage/MainPageNavbar";
+// import MainPageBody from "./components/MainPage/MainPageBody";
+// import MainPageFooter from "./components/MainPage/MaingPageFooter";
+import NewWord from "./components/NewWord/NewWord";
 
 function App() {
   return (
     <>
-      <MainPageNavbar />
+      {/* <MainPageNavbar />
       <MainPageBody />
-      <MainPageFooter />
+      <MainPageFooter /> */}
+      <NewWord />
     </>
   );
 }
