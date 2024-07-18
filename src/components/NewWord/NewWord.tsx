@@ -1,67 +1,97 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineSound } from "react-icons/ai";
 import { BsChatLeftTextFill } from "react-icons/bs";
+import axios from "axios";
+
+// Define types for the word data
+interface WordDto {
+  id: string;
+  value: string;
+  definition: string;
+  partOfSpeech: string;
+  pronunciation: string;
+  exampleSentences: string[];
+  dateAdded: string;
+}
 
 const NewWord: React.FC = () => {
-  // Example data
-  const exampleDate: Date = new Date(); // Today's date
+  const [wordData, setWordData] = useState<WordDto | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Function to format the date
-  const formatDate = (date: Date): string => {
-    return date
-      .toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-      .toUpperCase();
+  // Function to fetch the word of the day
+  const fetchWordOfTheDay = async () => {
+    try {
+      const response = await axios.get<WordDto>(
+        "http://localhost:5125/words/wordoftheday"
+      );
+      setWordData(response.data);
+    } catch (err) {
+      console.error("Error fetching word of the day:", err); // Log error
+      setError("Error fetching word of the day.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchWordOfTheDay();
+  }, []);
+
+  // Display loading or error messages
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  // Log the word data to inspect it
+  console.log("Current word data:", wordData);
+  console.log("VALUE:", wordData?.value); // Corrected property name
+
+  // Display the word details if data is available
+  if (!wordData) return <p>No word data available.</p>;
+
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col items-center p-4 mb-3 bg-gray-200">
-        <h2>Auteur</h2>
-        <p>{formatDate(exampleDate)}</p>
-      </div>
-      <div className="p-4 bg-gray-400 rounded-lg">
-        <div className="flex items-center mb-3">
-          <h3 className="mr-2">Auteur</h3>
-          <AiOutlineSound size={24} />
-        </div>
-        <h4 className="mb-2">NOUN</h4>
-        <p className="mb-4">
-          A filmmaker whose personal influence and artistic control over a movie
-          are so great that the filmmaker is regarded as the author of the
-          movie.
+    <div className="w-full max-w-lg overflow-hidden bg-white border border-gray-200 shadow-md rounded-2xl">
+      <div className="p-10 text-center bg-gray-50">
+        <h2 className="mb-2 text-6xl font-bold text-gray-900">
+          {wordData.value}
+        </h2>
+        <p className="text-sm text-gray-500">
+          {new Date(wordData.dateAdded).toLocaleDateString()}
         </p>
       </div>
-      <div className="p-4 mt-4 bg-gray-400 rounded-lg">
-        <div className="flex items-center mb-3">
-          <BsChatLeftTextFill size={24} className="mr-2" />
-          <h3 className="mr-2">Example Sentences</h3>
+
+      <div className="p-8">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {wordData.partOfSpeech}
+          </h3>
+          <AiOutlineSound
+            size={24}
+            className="text-blue-500 cursor-pointer hover:text-blue-600"
+          />
         </div>
-        <div className="flex flex-col">
-          <div className="flex items-start mb-2">
-            <AiOutlineSound size={24} className="mr-2" />
-            <p>
-              “Kathryn aimed to become an auteur whose films would be instantly
-              recognizable.”
-            </p>
+        <div className="mb-8">
+          <h4 className="mb-3 text-lg font-medium text-gray-800">Definition</h4>
+          <p className="leading-relaxed text-gray-700">{wordData.definition}</p>
+        </div>
+
+        <div className="pt-6 border-t border-gray-100">
+          <div className="flex items-center mb-4">
+            <BsChatLeftTextFill size={20} className="mr-2 text-blue-500" />
+            <h3 className="text-lg font-medium text-gray-800">
+              Example Sentences
+            </h3>
           </div>
-          <div className="flex items-start mb-2">
-            <AiOutlineSound size={24} className="mr-2" />
-            <p>
-              “Kathryn aimed to become an auteur whose films would be instantly
-              recognizable.”
-            </p>
-          </div>
-          <div className="flex items-start mb-2">
-            <AiOutlineSound size={24} className="mr-2" />
-            <p>
-              “Kathryn aimed to become an auteur whose films would be instantly
-              recognizable.”
-            </p>
+          <div className="space-y-4">
+            {wordData.exampleSentences.map((sentence, index) => (
+              <div className="flex items-start" key={index}>
+                <AiOutlineSound
+                  size={20}
+                  className="flex-shrink-0 mt-1 mr-3 text-blue-500 cursor-pointer hover:text-blue-600"
+                />
+                <p className="leading-relaxed text-gray-700">{sentence}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
