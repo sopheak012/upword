@@ -1,6 +1,8 @@
+import React from "react";
+
 const MainPageBody: React.FC = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="flex flex-col items-center justify-center">
         <h2 className="mb-4 text-2xl font-bold">The Wonder of Words</h2>
         <p className="mb-4">
