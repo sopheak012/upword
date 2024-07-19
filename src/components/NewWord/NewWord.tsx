@@ -38,6 +38,10 @@ const NewWord: React.FC = () => {
     fetchWordOfTheDay();
   }, []);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day);
@@ -64,6 +68,17 @@ const NewWord: React.FC = () => {
     return formatted;
   };
 
+  // Function to handle text-to-speech
+  const speakText = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.warn("Text-to-Speech is not supported in this browser.");
+    }
+  };
+
   // Display loading or error messages
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -75,7 +90,7 @@ const NewWord: React.FC = () => {
     <div className="w-full max-w-lg overflow-hidden bg-white border border-gray-200 shadow-md rounded-2xl">
       <div className="p-10 text-center bg-gray-50">
         <h2 className="mb-2 text-6xl font-bold text-gray-900">
-          {wordData.value}
+          {capitalizeFirstLetter(wordData.value)}
         </h2>
         <p className="text-sm text-gray-500">
           {formatDate(wordData.dateAdded)}
@@ -90,11 +105,13 @@ const NewWord: React.FC = () => {
           <AiOutlineSound
             size={24}
             className="text-blue-500 cursor-pointer hover:text-blue-600"
+            onClick={() => speakText(wordData.value)}
+            title="Speak word"
           />
         </div>
         <div className="mb-8">
           <h4 className="mb-3 text-lg font-medium text-gray-800">Definition</h4>
-          <p className="leading-relaxed text-gray-700">{wordData.definition}</p>
+          <p className="leading-relaxed text-gray-700">{`1. ${wordData.definition}`}</p>
         </div>
 
         <div className="pt-6 border-t border-gray-100">
@@ -110,6 +127,8 @@ const NewWord: React.FC = () => {
                 <AiOutlineSound
                   size={20}
                   className="flex-shrink-0 mt-1 mr-3 text-blue-500 cursor-pointer hover:text-blue-600"
+                  onClick={() => speakText(sentence)}
+                  title="Speak sentence"
                 />
                 <p className="leading-relaxed text-gray-700">{sentence}</p>
               </div>
