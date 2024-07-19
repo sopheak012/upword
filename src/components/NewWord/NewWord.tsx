@@ -38,13 +38,35 @@ const NewWord: React.FC = () => {
     fetchWordOfTheDay();
   }, []);
 
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const formatted = date.toLocaleDateString("en-US", options);
+
+    // Check if the day matches
+    if (date.getDate() !== day) {
+      console.warn(
+        `Date mismatch: input was ${dateString}, but formatted as ${formatted}`
+      );
+      // Adjust the date if needed
+      date.setDate(day);
+      return date.toLocaleDateString("en-US", options);
+    }
+
+    return formatted;
+  };
+
   // Display loading or error messages
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-
-  // Log the word data to inspect it
-  console.log("Current word data:", wordData);
-  console.log("VALUE:", wordData?.value); // Corrected property name
 
   // Display the word details if data is available
   if (!wordData) return <p>No word data available.</p>;
@@ -56,7 +78,7 @@ const NewWord: React.FC = () => {
           {wordData.value}
         </h2>
         <p className="text-sm text-gray-500">
-          {new Date(wordData.dateAdded).toLocaleDateString()}
+          {formatDate(wordData.dateAdded)}
         </p>
       </div>
 
