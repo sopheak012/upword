@@ -5,23 +5,25 @@ import MainPageFooter from "./components/MainPage/MainPageFooter";
 import MainPageBody from "./components/MainPage/MainPageBody";
 import MainPageNavbar from "./components/MainPage/MainPageNavbar";
 import NewWord from "./components/NewWord/NewWord";
+import AllWords from "./components/AllWords/AllWords";
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-gray-100">
         <MainPageNavbar />
-        <main className="flex-grow bg-gray-100">
+        <main className="flex-grow">
           <Routes>
             <Route path="/" element={<MainPageBody />} />
             <Route
               path="/wordoftheday"
               element={
-                <div className="flex items-center justify-center w-full h-full p-6">
+                <div className="flex items-center justify-center">
                   <NewWord />
                 </div>
               }
             />
+            <Route path="/allwords" element={<AllWords />} />
             {/* Add more routes here as needed */}
           </Routes>
         </main>

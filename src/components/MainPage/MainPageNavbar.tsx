@@ -3,20 +3,20 @@ import { Link } from "react-router-dom";
 
 const MainPageNavbar: React.FC = () => {
   return (
-    <nav className="text-gray-800 bg-gray-50">
-      <div className="flex justify-between p-4 mx-auto">
+    <>
+      <div className="flex justify-between p-3 font-sans">
         <div className="text-2xl font-bold">upword</div>
-        <div className="flex space-x-4">
-          <Link to="/wordoftheday" className="hover:text-gray-600">
+        <div className="flex flex-row gap-8">
+          <Link to="/wordoftheday" className="font-medium">
             Word of the Day
           </Link>
-          <Link to="/" className="hover:text-gray-600">
+          <Link to="/allwords" className="font-medium">
             All Words
           </Link>
-          <div className="hover:text-gray-600">SignIn</div>
+          <div className="font-medium">Sign In</div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
