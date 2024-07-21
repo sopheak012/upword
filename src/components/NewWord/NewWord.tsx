@@ -88,13 +88,17 @@ const NewWord: React.FC = () => {
 
   return (
     <div className="w-full max-w-lg overflow-hidden bg-white border border-gray-200 shadow-md rounded-2xl">
-      <div className="p-10 text-center bg-gray-50">
-        <h2 className="mb-2 text-6xl font-bold text-gray-900">
-          {capitalizeFirstLetter(wordData.value)}
-        </h2>
-        <p className="text-sm text-gray-500">
-          {formatDate(wordData.dateAdded)}
-        </p>
+      <div className="flex flex-col h-40 bg-gray-50">
+        <div className="flex items-center justify-center flex-grow">
+          <h2 className="text-6xl font-bold text-gray-900">
+            {capitalizeFirstLetter(wordData.value)}
+          </h2>
+        </div>
+        <div className="p-4 text-center">
+          <p className="text-sm text-gray-500">
+            {formatDate(wordData.dateAdded)}
+          </p>
+        </div>
       </div>
 
       <div className="p-8">
@@ -124,12 +128,7 @@ const NewWord: React.FC = () => {
           <div className="space-y-4">
             {wordData.exampleSentences.map((sentence, index) => (
               <div className="flex items-start" key={index}>
-                <AiOutlineSound
-                  size={20}
-                  className="flex-shrink-0 mt-1 mr-3 text-blue-500 cursor-pointer hover:text-blue-600"
-                  onClick={() => speakText(sentence)}
-                  title="Speak sentence"
-                />
+                <span className="flex-shrink-0 mr-3">{index + 1}.</span>
                 <p className="leading-relaxed text-gray-700">{sentence}</p>
               </div>
             ))}
