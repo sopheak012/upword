@@ -42,25 +42,25 @@ Follow these steps to set up and run the application on your local machine:
 
 1. Open a terminal or command prompt.
 2. Clone the frontend repository:
-   \`\`\`
+   ```
    git clone https://github.com/sopheak012/upword.git
-   \`\`\`
+   ```
 3. Navigate to the project directory:
-   \`\`\`
+   ```
    cd upword
-   \`\`\`
+   ```
 4. Install the required dependencies:
-   \`\`\`
+   ```
    npm install
-   \`\`\`
+   ```
 
 ### 5. Run the Frontend Application
 
 1. Start the development server:
-   \`\`\`
+   ```
    npm run dev
-   \`\`\`
-2. Open your web browser and visit \`http://localhost:5173\` to view the app.
+   ```
+2. Open your web browser and visit `http://localhost:5173` to view the app.
 
 ### 6. Set Up and Run the Backend
 
@@ -68,9 +68,9 @@ To ensure full functionality, you need to set up and run the backend as well:
 
 1. Open a new terminal or command prompt.
 2. Clone the backend repository:
-   \`\`\`
+   ```
    git clone https://github.com/sopheak012/upword.Api.git
-   \`\`\`
+   ```
 3. Follow the setup instructions provided in the backend repository's README file.
 4. Ensure the backend server is running before using the frontend application.
 
