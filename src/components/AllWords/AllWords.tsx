@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Define types for the word data
 interface WordDto {
@@ -16,6 +17,7 @@ const AllWords: React.FC = () => {
   const [words, setWords] = useState<WordDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   // Function to fetch all words
   const fetchAllWords = async () => {
@@ -53,6 +55,11 @@ const AllWords: React.FC = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
+  // Handle click event to navigate to word detail
+  const handleClick = (wordValue: string) => {
+    navigate(`/words/${wordValue}`); // Navigate to the detail page
+  };
+
   // Display loading or error messages
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -60,11 +67,12 @@ const AllWords: React.FC = () => {
   // Display the words in a grid
   return (
     <div className="container p-4 mx-auto">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {words.map((word) => (
           <div
             key={word.id}
-            className="p-4 bg-white border border-gray-200 rounded-lg shadow-md"
+            className="p-4 bg-white border border-gray-200 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+            onClick={() => handleClick(word.value)} // Handle click event
           >
             <h2 className="text-2xl font-bold text-center text-gray-900">
               {capitalizeFirstLetter(word.value)}

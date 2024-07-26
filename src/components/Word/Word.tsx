@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { AiOutlineSound } from "react-icons/ai";
 import { BsChatLeftTextFill } from "react-icons/bs";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // Define types for the word data
 interface WordDto {
@@ -15,11 +16,33 @@ interface WordDto {
 }
 
 const NewWord: React.FC = () => {
+  const { word } = useParams<{ word: string }>(); // Get the word from URL params
   const [wordData, setWordData] = useState<WordDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch the word of the day
+  // Function to fetch the word data
+  const fetchWordData = async (word: string) => {
+    try {
+      const response = await axios.get<WordDto>(
+        `http://localhost:5125/words/${word}`
+      );
+      setWordData(response.data);
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      console.error("Error fetching word data:", axiosError); // Log error
+      if (axiosError.response?.status === 404) {
+        // Fallback to "word of the day" if the specific word is not found
+        fetchWordOfTheDay();
+      } else {
+        setError("Error fetching word data.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to fetch the "word of the day"
   const fetchWordOfTheDay = async () => {
     try {
       const response = await axios.get<WordDto>(
@@ -27,7 +50,8 @@ const NewWord: React.FC = () => {
       );
       setWordData(response.data);
     } catch (err) {
-      console.error("Error fetching word of the day:", err); // Log error
+      const axiosError = err as AxiosError;
+      console.error("Error fetching word of the day:", axiosError); // Log error
       setError("Error fetching word of the day.");
     } finally {
       setLoading(false);
@@ -35,8 +59,12 @@ const NewWord: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchWordOfTheDay();
-  }, []);
+    if (word) {
+      fetchWordData(word);
+    } else {
+      fetchWordOfTheDay();
+    }
+  }, [word]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -53,19 +81,7 @@ const NewWord: React.FC = () => {
       day: "numeric",
     };
 
-    const formatted = date.toLocaleDateString("en-US", options);
-
-    // Check if the day matches
-    if (date.getDate() !== day) {
-      console.warn(
-        `Date mismatch: input was ${dateString}, but formatted as ${formatted}`
-      );
-      // Adjust the date if needed
-      date.setDate(day);
-      return date.toLocaleDateString("en-US", options);
-    }
-
-    return formatted;
+    return date.toLocaleDateString("en-US", options);
   };
 
   // Function to handle text-to-speech

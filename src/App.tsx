@@ -1,10 +1,9 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import MainPageFooter from "./components/MainPage/MainPageFooter";
 import MainPageBody from "./components/MainPage/MainPageBody";
 import MainPageNavbar from "./components/MainPage/MainPageNavbar";
-import NewWord from "./components/NewWord/NewWord";
+import NewWord from "./components/Word/Word";
 import AllWords from "./components/AllWords/AllWords";
 
 function App() {
@@ -23,8 +22,15 @@ function App() {
                 </div>
               }
             />
+            <Route
+              path="/words/:word"
+              element={
+                <div className="flex items-center justify-center">
+                  <NewWord />
+                </div>
+              }
+            />
             <Route path="/allwords" element={<AllWords />} />
-            {/* Add more routes here as needed */}
           </Routes>
         </main>
         <MainPageFooter />
