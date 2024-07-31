@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { User } from "../Interfaces/index"; 
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Redux/Slices/userSlice";
+import { User } from "../../Interfaces/index";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,12 +18,17 @@ const Login: React.FC = () => {
       // Replace with your login API endpoint
       await axios.post("http://localhost:5125/auth/login", { email, password });
 
-      // Save the user's data to local storage as a single object
+      // Create the user object
       const user: User = {
         email,
         isLogin: true,
       };
+
+      // Save the user's data to local storage
       localStorage.setItem("user", JSON.stringify(user));
+
+      // Update the Redux store
+      dispatch(setUser(user));
 
       // Redirect to home or another page upon successful login
       navigate("/");

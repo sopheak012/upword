@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { User } from "../Interfaces/index"; // Import the User interface
+import { User } from "../../Interfaces/index";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Redux/Slices/userSlice";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ const Register: React.FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,13 +29,19 @@ const Register: React.FC = () => {
         dateOfBirth,
       });
 
-      // Save the user's data to local storage as a single object
+      // Create the user object
       const user: User = {
         email,
         isLogin: true,
       };
+
+      // Save the user's data to local storage
       localStorage.setItem("user", JSON.stringify(user));
 
+      // Update the Redux store
+      dispatch(setUser(user));
+
+      // Redirect to login page upon successful registration
       navigate("/login");
     } catch (err) {
       setError("Error registering. Please try again.");
