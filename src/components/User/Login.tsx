@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { User } from "../Interfaces/index"; 
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,14 @@ const Login: React.FC = () => {
     try {
       // Replace with your login API endpoint
       await axios.post("http://localhost:5125/auth/login", { email, password });
+
+      // Save the user's data to local storage as a single object
+      const user: User = {
+        email,
+        isLogin: true,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
+
       // Redirect to home or another page upon successful login
       navigate("/");
     } catch (err) {

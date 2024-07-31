@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { User } from "../Interfaces/index"; // Import the User interface
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,6 +25,14 @@ const Register: React.FC = () => {
         confirmPassword,
         dateOfBirth,
       });
+
+      // Save the user's data to local storage as a single object
+      const user: User = {
+        email,
+        isLogin: true,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
+
       navigate("/login");
     } catch (err) {
       setError("Error registering. Please try again.");
