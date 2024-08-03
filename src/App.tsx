@@ -5,6 +5,7 @@ import MainPageBody from "./components/MainPage/MainPageBody";
 import MainPageNavbar from "./components/MainPage/MainPageNavbar";
 import NewWord from "./components/Word/Word";
 import AllWords from "./components/AllWords/AllWords";
+import MyWords from "./components/MyWords/MyWords"; // Import MyWords component
 import Login from "./components/User/Login";
 import Register from "./components/User/Register"; // Assuming you have a Register component
 
@@ -33,10 +34,9 @@ function App() {
               }
             />
             <Route path="/allwords" element={<AllWords />} />
-            <Route path="/login" element={<Login />} />{" "}
-            {/* Added Login route */}
-            <Route path="/register" element={<Register />} />{" "}
-            {/* Assuming Register route */}
+            <Route path="/mywords" element={<MyWords />} />{" "}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
         <MainPageFooter />

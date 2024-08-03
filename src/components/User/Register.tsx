@@ -5,6 +5,7 @@ import { AiOutlineUserAdd } from "react-icons/ai";
 import { User } from "../../Interfaces/index";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/Slices/userSlice";
+import { RegisterResponse } from "../../Interfaces/index";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -22,16 +23,24 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:5125/auth/register", {
-        email,
-        password,
-        confirmPassword,
-        dateOfBirth,
-      });
+      // Post registration data to the backend with explicit typing for the response
+      const response = await axios.post<RegisterResponse>(
+        "http://localhost:5125/auth/register",
+        {
+          email,
+          password,
+          confirmPassword,
+          dateOfBirth,
+        }
+      );
 
-      // Create the user object
+      // Extract user data from the response with renamed variable
+      const { email: responseEmail, id } = response.data;
+
+      // Create the user object with the ID
       const user: User = {
-        email,
+        email: responseEmail,
+        id, // Include the user ID
         isLogin: true,
       };
 

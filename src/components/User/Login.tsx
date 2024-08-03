@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/Slices/userSlice";
-import { User } from "../../Interfaces/index";
+import { User } from "../../Interfaces/index"; // Import User interface
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -15,11 +15,18 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Replace with your login API endpoint
-      await axios.post("http://localhost:5125/auth/login", { email, password });
+      // Make the login request
+      const response = await axios.post("http://localhost:5125/auth/login", {
+        email,
+        password,
+      });
 
-      // Create the user object
+      // Extract user data from the response
+      const { id } = response.data;
+
+      // Create the user object with the id
       const user: User = {
+        id,
         email,
         isLogin: true,
       };

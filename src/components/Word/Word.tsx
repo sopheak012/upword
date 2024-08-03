@@ -1,19 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { AiOutlineSound } from "react-icons/ai";
+import { AiOutlineSound, AiOutlineStar } from "react-icons/ai";
 import { BsChatLeftTextFill } from "react-icons/bs";
 import axios, { AxiosError } from "axios";
-
-// Define types for the word data
-interface WordDto {
-  id: string;
-  value: string;
-  definition: string;
-  partOfSpeech: string;
-  pronunciation: string;
-  exampleSentences: string[];
-  dateAdded: string;
-}
+import { WordDto } from "../../Interfaces/index"; // Import WordDto
 
 const NewWord: React.FC = () => {
   const { word } = useParams<{ word: string }>(); // Get the word from URL params
@@ -119,14 +109,21 @@ const NewWord: React.FC = () => {
 
       <div className="p-8">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">
-            {wordData.partOfSpeech}
-          </h3>
-          <AiOutlineSound
+          <div className="flex items-center">
+            <h3 className="text-xl font-semibold text-gray-800 mr-4">
+              {wordData.partOfSpeech}
+            </h3>
+            <AiOutlineSound
+              size={24}
+              className="text-blue-500 cursor-pointer hover:text-blue-600"
+              onClick={() => speakText(wordData.value)}
+              title="Speak word"
+            />
+          </div>
+          <AiOutlineStar
             size={24}
-            className="text-blue-500 cursor-pointer hover:text-blue-600"
-            onClick={() => speakText(wordData.value)}
-            title="Speak word"
+            className="cursor-pointer text-gray-400 hover:text-yellow-500"
+            title="Bookmark"
           />
         </div>
         <div className="mb-8">

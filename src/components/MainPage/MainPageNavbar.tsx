@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Redux/store"; // Adjust import path if necessary
+import { RootState } from "../../Redux/store";
 import { clearUser } from "../../Redux/Slices/userSlice";
 import { User } from "../../Interfaces/index";
 
@@ -65,6 +65,11 @@ const MainPageNavbar: React.FC = () => {
         <Link to="/allwords" className="font-medium">
           All Words
         </Link>
+        {isLoggedIn && (
+          <Link to="/mywords" className="font-medium">
+            My Words
+          </Link>
+        )}
         {isLoggedIn ? (
           <div className="flex items-center gap-4">
             <span className="font-medium">{userEmail}</span>

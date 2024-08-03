@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-// Define types for the word data
-interface WordDto {
-  id: string;
-  value: string;
-  definition: string;
-  partOfSpeech: string;
-  pronunciation: string;
-  exampleSentences: string[];
-  dateAdded: string;
-}
+import { WordDto } from "../../Interfaces/index";
 
 const AllWords: React.FC = () => {
   const [words, setWords] = useState<WordDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
 
   // Function to fetch all words
   const fetchAllWords = async () => {
