@@ -1,17 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { AiOutlineSound, AiOutlineStar } from "react-icons/ai";
+import { AiOutlineSound, AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { BsChatLeftTextFill } from "react-icons/bs";
 import axios, { AxiosError } from "axios";
-import { WordDto } from "../../Interfaces/index"; // Import WordDto
+import { WordDto } from "../../Interfaces/index";
 
 const NewWord: React.FC = () => {
-  const { word } = useParams<{ word: string }>(); // Get the word from URL params
+  const { word } = useParams<{ word: string }>();
   const [wordData, setWordData] = useState<WordDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [userWords, setUserWords] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Function to fetch the word data
+  // Retrieve user ID from localStorage
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserId(userData.id);
+    }
+  }, []);
+
+  // Fetch the user's words from the backend
+  const fetchUserWords = async (userId: string) => {
+    try {
+      const response = await axios.get<string[]>(
+        `http://localhost:5125/userwords/${userId}`
+      );
+      setUserWords(response.data);
+    } catch (err) {
+      console.error("Error fetching user's words:", err);
+    }
+  };
+
+  // Fetch word data from the backend
   const fetchWordData = async (word: string) => {
     try {
       const response = await axios.get<WordDto>(
@@ -20,9 +43,8 @@ const NewWord: React.FC = () => {
       setWordData(response.data);
     } catch (err) {
       const axiosError = err as AxiosError;
-      console.error("Error fetching word data:", axiosError); // Log error
+      console.error("Error fetching word data:", axiosError);
       if (axiosError.response?.status === 404) {
-        // Fallback to "word of the day" if the specific word is not found
         fetchWordOfTheDay();
       } else {
         setError("Error fetching word data.");
@@ -32,7 +54,7 @@ const NewWord: React.FC = () => {
     }
   };
 
-  // Function to fetch the "word of the day"
+  // Fetch the "word of the day" from the backend
   const fetchWordOfTheDay = async () => {
     try {
       const response = await axios.get<WordDto>(
@@ -41,20 +63,49 @@ const NewWord: React.FC = () => {
       setWordData(response.data);
     } catch (err) {
       const axiosError = err as AxiosError;
-      console.error("Error fetching word of the day:", axiosError); // Log error
+      console.error("Error fetching word of the day:", axiosError);
       setError("Error fetching word of the day.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Toggle user's word status
+  const toggleUserWord = async (word: string) => {
+    if (!userId) return;
+
+    try {
+      const isUserWord = userWords.includes(word);
+
+      if (isUserWord) {
+        // Remove from user's words
+        await axios.delete(`http://localhost:5125/userwords/${userId}/${word}`);
+        setUserWords((prevWords) =>
+          prevWords.filter((userWord) => userWord !== word)
+        );
+      } else {
+        // Add to user's words
+        await axios.post(`http://localhost:5125/userwords`, {
+          UserId: userId,
+          WordValue: word,
+        });
+        setUserWords((prevWords) => [...prevWords, word]);
+      }
+    } catch (err) {
+      console.error("Error updating user's words:", err);
+    }
+  };
+
   useEffect(() => {
+    if (userId) {
+      fetchUserWords(userId);
+    }
     if (word) {
       fetchWordData(word);
     } else {
       fetchWordOfTheDay();
     }
-  }, [word]);
+  }, [word, userId]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -74,7 +125,6 @@ const NewWord: React.FC = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
-  // Function to handle text-to-speech
   const speakText = (text: string) => {
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text);
@@ -85,12 +135,12 @@ const NewWord: React.FC = () => {
     }
   };
 
-  // Display loading or error messages
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  // Display the word details if data is available
   if (!wordData) return <p>No word data available.</p>;
+
+  const isUserWord = userWords.includes(wordData.value);
 
   return (
     <div className="w-full max-w-lg overflow-hidden bg-white border border-gray-200 shadow-md rounded-2xl">
@@ -120,11 +170,24 @@ const NewWord: React.FC = () => {
               title="Speak word"
             />
           </div>
-          <AiOutlineStar
-            size={24}
-            className="cursor-pointer text-gray-400 hover:text-yellow-500"
-            title="Bookmark"
-          />
+          <div
+            className="cursor-pointer"
+            onClick={() => toggleUserWord(wordData.value)}
+          >
+            {isUserWord ? (
+              <AiFillStar
+                size={24}
+                className="text-yellow-500"
+                title="Remove from bookmarks"
+              />
+            ) : (
+              <AiOutlineStar
+                size={24}
+                className="text-gray-400 hover:text-yellow-500"
+                title="Add to bookmarks"
+              />
+            )}
+          </div>
         </div>
         <div className="mb-8">
           <h4 className="mb-3 text-lg font-medium text-gray-800">Definition</h4>
