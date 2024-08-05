@@ -170,24 +170,26 @@ const NewWord: React.FC = () => {
               title="Speak word"
             />
           </div>
-          <div
-            className="cursor-pointer"
-            onClick={() => toggleUserWord(wordData.value)}
-          >
-            {isUserWord ? (
-              <AiFillStar
-                size={24}
-                className="text-yellow-500"
-                title="Remove from bookmarks"
-              />
-            ) : (
-              <AiOutlineStar
-                size={24}
-                className="text-gray-400 hover:text-yellow-500"
-                title="Add to bookmarks"
-              />
-            )}
-          </div>
+          {userId && (
+            <div
+              className="cursor-pointer"
+              onClick={() => toggleUserWord(wordData.value)}
+            >
+              {isUserWord ? (
+                <AiFillStar
+                  size={24}
+                  className="text-yellow-500"
+                  title="Remove from bookmarks"
+                />
+              ) : (
+                <AiOutlineStar
+                  size={24}
+                  className="text-gray-400 hover:text-yellow-500"
+                  title="Add to bookmarks"
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="mb-8">
           <h4 className="mb-3 text-lg font-medium text-gray-800">Definition</h4>

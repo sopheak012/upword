@@ -64,29 +64,27 @@ const MyWords: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center items-center">
-      <div className="w-full max-w-4xl">
-        {words.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {words.map((word: string) => (
-              <div
-                key={word}
-                className="p-4 bg-white border border-gray-200 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                onClick={() => handleClick(word)}
-              >
-                <h2 className="text-2xl font-bold text-center text-gray-900">
-                  {capitalizeFirstLetter(word)}
-                </h2>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 mb-4">
-            <p>You don't have any words in your collection yet.</p>
-            <p>Add words to your collection to see them here!</p>
-          </div>
-        )}
-      </div>
+    <div className="container p-4 mx-auto">
+      {words.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {words.map((word: string) => (
+            <div
+              key={word}
+              className="p-4 bg-white border border-gray-200 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+              onClick={() => handleClick(word)}
+            >
+              <h2 className="text-2xl font-bold text-center text-gray-900">
+                {capitalizeFirstLetter(word)}
+              </h2>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-500 mb-4">
+          <p>You don't have any words in your collection yet.</p>
+          <p>Add words to your collection to see them here!</p>
+        </div>
+      )}
     </div>
   );
 };

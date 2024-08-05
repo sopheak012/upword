@@ -38,7 +38,7 @@ const Login: React.FC = () => {
       dispatch(setUser(user));
 
       // Redirect to home or another page upon successful login
-      navigate("/");
+      navigate("/wordoftheday");
     } catch (err) {
       setError("Invalid login attempt.");
     }

@@ -51,7 +51,7 @@ const Register: React.FC = () => {
       dispatch(setUser(user));
 
       // Redirect to login page upon successful registration
-      navigate("/login");
+      navigate("/wordoftheday");
     } catch (err) {
       setError("Error registering. Please try again.");
     }
