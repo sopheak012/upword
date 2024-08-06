@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import MainPageFooter from "./components/MainPage/MainPageFooter";
 import MainPageBody from "./components/MainPage/MainPageBody";
@@ -8,8 +13,16 @@ import AllWords from "./components/AllWords/AllWords";
 import MyWords from "./components/MyWords/MyWords"; // Import MyWords component
 import Login from "./components/User/Login";
 import Register from "./components/User/Register"; // Assuming you have a Register component
+import { useState, useEffect } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    setIsLoggedIn(!!user.isLogin);
+  }, []);
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-gray-100">
@@ -35,8 +48,23 @@ function App() {
             />
             <Route path="/allwords" element={<AllWords />} />
             <Route path="/mywords" element={<MyWords />} />{" "}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {isLoggedIn ? (
+              <>
+                <Route
+                  path="/login"
+                  element={<Navigate to="/wordoftheday" />}
+                />
+                <Route
+                  path="/register"
+                  element={<Navigate to="/wordoftheday" />}
+                />
+              </>
+            ) : (
+              <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </>
+            )}
           </Routes>
         </main>
         <MainPageFooter />

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { User } from "../../Interfaces/index";
@@ -8,13 +8,17 @@ import { setUser } from "../../Redux/Slices/userSlice";
 import { RegisterResponse } from "../../Interfaces/index";
 
 const Register: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Extract the initial email from the location state, if available
+  const initialEmail = location.state?.email || "";
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +38,7 @@ const Register: React.FC = () => {
         }
       );
 
-      // Extract user data from the response with renamed variable
+      // Extract user data from the response
       const { email: responseEmail, id } = response.data;
 
       // Create the user object with the ID
@@ -50,7 +54,7 @@ const Register: React.FC = () => {
       // Update the Redux store
       dispatch(setUser(user));
 
-      // Redirect to login page upon successful registration
+      // Redirect to the word of the day page upon successful registration
       navigate("/wordoftheday");
     } catch (err) {
       setError("Error registering. Please try again.");
