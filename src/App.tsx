@@ -10,19 +10,35 @@ import MainPageBody from "./components/MainPage/MainPageBody";
 import MainPageNavbar from "./components/MainPage/MainPageNavbar";
 import NewWord from "./components/Word/Word";
 import AllWords from "./components/AllWords/AllWords";
-import MyWords from "./components/MyWords/MyWords"; // Import MyWords component
+import MyWords from "./components/MyWords/MyWords";
 import Login from "./components/User/Login";
-import Register from "./components/User/Register"; // Assuming you have a Register component
-import { useState, useEffect } from "react";
-import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute component
+import Register from "./components/User/Register";
+import { useEffect } from "react";
+import PrivateRoute from "./components/PrivateRoute";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "./Redux/store";
+import { setUser } from "./Redux/Slices/userSlice";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+  const isLoggedInFromState = useSelector(
+    (state: RootState) => state.user.isLogin
+  );
 
   useEffect(() => {
+    // Synchronize the Redux state with local storage
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    setIsLoggedIn(!!user.isLogin);
-  }, []);
+    const loggedIn = !!user.isLogin;
+    if (loggedIn !== isLoggedInFromState) {
+      dispatch(
+        setUser({
+          id: user.id || "",
+          email: user.email || "",
+          isLogin: loggedIn,
+        })
+      );
+    }
+  }, [isLoggedInFromState, dispatch]);
 
   return (
     <Router>
@@ -51,26 +67,32 @@ function App() {
             <Route
               path="/mywords"
               element={
-                <PrivateRoute element={<MyWords />} isLoggedIn={isLoggedIn} />
+                <PrivateRoute
+                  element={<MyWords />}
+                  isLoggedIn={isLoggedInFromState}
+                />
               }
             />
-            {isLoggedIn ? (
-              <>
-                <Route
-                  path="/login"
-                  element={<Navigate to="/wordoftheday" />}
-                />
-                <Route
-                  path="/register"
-                  element={<Navigate to="/wordoftheday" />}
-                />
-              </>
-            ) : (
-              <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </>
-            )}
+            <Route
+              path="/login"
+              element={
+                isLoggedInFromState ? (
+                  <Navigate to="/wordoftheday" />
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                isLoggedInFromState ? (
+                  <Navigate to="/wordoftheday" />
+                ) : (
+                  <Register />
+                )
+              }
+            />
           </Routes>
         </main>
         <MainPageFooter />
