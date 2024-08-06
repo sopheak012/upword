@@ -14,6 +14,7 @@ import MyWords from "./components/MyWords/MyWords"; // Import MyWords component
 import Login from "./components/User/Login";
 import Register from "./components/User/Register"; // Assuming you have a Register component
 import { useState, useEffect } from "react";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute component
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -47,7 +48,12 @@ function App() {
               }
             />
             <Route path="/allwords" element={<AllWords />} />
-            <Route path="/mywords" element={<MyWords />} />{" "}
+            <Route
+              path="/mywords"
+              element={
+                <PrivateRoute element={<MyWords />} isLoggedIn={isLoggedIn} />
+              }
+            />
             {isLoggedIn ? (
               <>
                 <Route
