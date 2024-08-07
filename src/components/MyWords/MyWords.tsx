@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const MyWords: React.FC = () => {
   const [words, setWords] = useState<string[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -35,7 +34,6 @@ const MyWords: React.FC = () => {
             `${import.meta.env.VITE_API_URL}/userwords/${userId}`
           );
           setWords(response.data);
-          setMessage(null);
         } catch (err) {
           console.error("Error fetching user words:", err);
           setError("Error fetching your words.");
