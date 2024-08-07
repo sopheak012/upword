@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { User } from "../../Interfaces/index";
+import { User, RegisterResponse } from "../../Interfaces/index";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/Slices/userSlice";
-import { RegisterResponse } from "../../Interfaces/index";
 
 const Register: React.FC = () => {
   const location = useLocation();
@@ -29,7 +28,7 @@ const Register: React.FC = () => {
     try {
       // Post registration data to the backend with explicit typing for the response
       const response = await axios.post<RegisterResponse>(
-        "http://localhost:5125/auth/register",
+        `${import.meta.env.VITE_API_URL}/auth/register`,
         {
           email,
           password,

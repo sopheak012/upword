@@ -9,15 +9,14 @@ const AllWords: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Function to fetch all words
   const fetchAllWords = async () => {
     try {
       const response = await axios.get<WordDto[]>(
-        "http://localhost:5125/words"
+        `${import.meta.env.VITE_API_URL}/words`
       );
       setWords(response.data);
     } catch (err) {
-      console.error("Error fetching all words:", err); // Log error
+      console.error("Error fetching all words:", err);
       setError("Error fetching all words.");
     } finally {
       setLoading(false);
@@ -45,16 +44,13 @@ const AllWords: React.FC = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
-  // Handle click event to navigate to word detail
   const handleClick = (wordValue: string) => {
-    navigate(`/words/${wordValue}`); // Navigate to the detail page
+    navigate(`/words/${wordValue}`);
   };
 
-  // Display loading or error messages
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  // Display the words in a grid
   return (
     <div className="container p-4 mx-auto">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -62,7 +58,7 @@ const AllWords: React.FC = () => {
           <div
             key={word.id}
             className="p-4 bg-white border border-gray-200 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-            onClick={() => handleClick(word.value)} // Handle click event
+            onClick={() => handleClick(word.value)}
           >
             <h2 className="text-2xl font-bold text-center text-gray-900">
               {capitalizeFirstLetter(word.value)}

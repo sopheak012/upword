@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       // Make the login request
-      const response = await axios.post("http://localhost:5125/auth/login", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
         email,
         password,
       });

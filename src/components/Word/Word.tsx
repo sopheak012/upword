@@ -13,8 +13,8 @@ const NewWord: React.FC = () => {
   const [userWords, setUserWords] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Retrieve user ID from localStorage
   useEffect(() => {
+    // Retrieve user ID from localStorage
     const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
@@ -22,55 +22,47 @@ const NewWord: React.FC = () => {
     }
   }, []);
 
-  // Fetch the user's words from the backend
-  const fetchUserWords = async (userId: string) => {
-    try {
-      const response = await axios.get<string[]>(
-        `http://localhost:5125/userwords/${userId}`
-      );
-      setUserWords(response.data);
-    } catch (err) {
-      console.error("Error fetching user's words:", err);
-    }
-  };
-
-  // Fetch word data from the backend
-  const fetchWordData = async (word: string) => {
-    try {
-      const response = await axios.get<WordDto>(
-        `http://localhost:5125/words/${word}`
-      );
-      setWordData(response.data);
-    } catch (err) {
-      const axiosError = err as AxiosError;
-      console.error("Error fetching word data:", axiosError);
-      if (axiosError.response?.status === 404) {
-        fetchWordOfTheDay();
-      } else {
-        setError("Error fetching word data.");
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userId) {
+        try {
+          // Fetch the user's words from the backend
+          const userWordsResponse = await axios.get<string[]>(
+            `${import.meta.env.VITE_API_URL}/userwords/${userId}`
+          );
+          setUserWords(userWordsResponse.data);
+        } catch (err) {
+          console.error("Error fetching user's words:", err);
+        }
       }
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Fetch the "word of the day" from the backend
-  const fetchWordOfTheDay = async () => {
-    try {
-      const response = await axios.get<WordDto>(
-        "http://localhost:5125/words/wordoftheday"
-      );
-      setWordData(response.data);
-    } catch (err) {
-      const axiosError = err as AxiosError;
-      console.error("Error fetching word of the day:", axiosError);
-      setError("Error fetching word of the day.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        // Fetch word data from the backend
+        const wordResponse = word
+          ? await axios.get<WordDto>(
+              `${import.meta.env.VITE_API_URL}/words/${word}`
+            )
+          : await axios.get<WordDto>(
+              `${import.meta.env.VITE_API_URL}/words/wordoftheday`
+            );
 
-  // Toggle user's word status
+        setWordData(wordResponse.data);
+      } catch (err) {
+        const axiosError = err as AxiosError;
+        console.error("Error fetching word data:", axiosError);
+        if (axiosError.response?.status === 404 && !word) {
+          setError("No word of the day found.");
+        } else {
+          setError("Error fetching word data.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [word, userId]);
+
   const toggleUserWord = async (word: string) => {
     if (!userId) return;
 
@@ -79,13 +71,15 @@ const NewWord: React.FC = () => {
 
       if (isUserWord) {
         // Remove from user's words
-        await axios.delete(`http://localhost:5125/userwords/${userId}/${word}`);
+        await axios.delete(
+          `${import.meta.env.VITE_API_URL}/userwords/${userId}/${word}`
+        );
         setUserWords((prevWords) =>
           prevWords.filter((userWord) => userWord !== word)
         );
       } else {
         // Add to user's words
-        await axios.post(`http://localhost:5125/userwords`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/userwords`, {
           UserId: userId,
           WordValue: word,
         });
@@ -95,17 +89,6 @@ const NewWord: React.FC = () => {
       console.error("Error updating user's words:", err);
     }
   };
-
-  useEffect(() => {
-    if (userId) {
-      fetchUserWords(userId);
-    }
-    if (word) {
-      fetchWordData(word);
-    } else {
-      fetchWordOfTheDay();
-    }
-  }, [word, userId]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();

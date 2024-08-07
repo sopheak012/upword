@@ -32,7 +32,7 @@ const MyWords: React.FC = () => {
       const fetchUserWords = async (userId: string) => {
         try {
           const response = await axios.get<string[]>(
-            `http://localhost:5125/userwords/${userId}`
+            `${import.meta.env.VITE_API_URL}/userwords/${userId}`
           );
           setWords(response.data);
           setMessage(null);
