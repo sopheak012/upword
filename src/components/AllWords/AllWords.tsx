@@ -11,9 +11,10 @@ const AllWords: React.FC = () => {
 
   const fetchAllWords = async () => {
     try {
-      const response = await axios.get<WordDto[]>(
-        `${import.meta.env.VITE_API_URL}/words`
-      );
+      const apiUrl = import.meta.env.VITE_API_URL;
+      console.log("Fetching words from:", `${apiUrl}/words`);
+      const response = await axios.get<WordDto[]>(`${apiUrl}/words`);
+      console.log("Words fetched:", response.data);
       setWords(response.data);
     } catch (err) {
       console.error("Error fetching all words:", err);
